@@ -7,7 +7,7 @@ export const ENDPOINTS = {
 };
 
 // Publishable app key: safe in source, and it only identifies the app in the device flow.
-export const APP_KEY = "";
+export const APP_KEY = "pk_hHFpSNlOL3xkFImZ";
 
 const STORE_KEY = "jury.key";
 const DEVICE_KEY = "jury.device";
