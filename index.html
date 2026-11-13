@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>JURY — predict the model verdict</title>
+    <meta
+      name="description"
+      content="A game where decision models form a jury: read the case, bet on the verdict, then see how each model split its probabilities."
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="bar">
+      <a class="brand" href="./">JURY</a>
+      <p class="tag">Decision models vote on a hard call. You bet on the verdict before they speak.</p>
+      <button id="pollen" class="pill" type="button">Connect Pollen</button>
+    </header>
+
+    <main>
+      <section class="setup">
+        <p class="hint" id="status" aria-live="polite">
+          Connect your Pollen, pick a verdict, then convene the jury.
+        </p>
+      </section>
+
+      <div class="stage">
+        <section class="case" aria-labelledby="case-title">
+          <div class="case-head">
+            <span class="case-no" id="case-no">Case 1 of 4</span>
+            <span class="case-chips" id="case-chips">100 chips</span>
+          </div>
+          <h1 id="case-title">—</h1>
+          <p class="state" id="case-state"></p>
+
+          <h2 class="prompt" id="case-question"></h2>
+          <div class="options" id="options" role="radiogroup" aria-label="Your verdict"></div>
+
+          <div class="bet">
+            <span class="bet-label">Stake</span>
+            <div class="bet-chips" id="bet-chips" role="radiogroup" aria-label="Stake"></div>
+            <p class="hint bet-note">Even money. Double if the whole jury agrees with you.</p>
+          </div>
+
+          <div class="askrow">
+            <button id="go" class="go" type="button">Convene the jury</button>
+            <button id="next" class="ghost" type="button" hidden>Next case</button>
+          </div>
+        </section>
+
+        <section class="verdict" aria-live="polite">
+          <div id="empty" class="empty">
+            <p>No verdict yet.</p>
+            <p class="small">Each model returns a choice and a probability for every option. The jury's number is their average.</p>
+          </div>
+
+          <div id="result" hidden>
+            <p class="badge" id="result-badge">—</p>
+            <h2 id="result-title">—</h2>
+            <p class="small" id="result-sub"></p>
+
+            <div class="bars" id="bars"></div>
+
+            <h3>How each model voted</h3>
+            <ul class="members" id="members"></ul>
+
+            <p class="meter" id="meter"></p>
+          </div>
+        </section>
+      </div>
+
+      <section class="about">
+        <h2>What is being played</h2>
+        <p>
+          Every member of this jury is a Pollinations <em>decision model</em>, asked through
+          <code>POST /alpha/decisions</code> with one typed <code>choice</code> question. A model
+          answers with the option it picks and a probability for each option; the app averages those
+          distributions and calls the highest one the verdict.
+        </p>
+        <p>
+          The probabilities are the models' own, not truth. A confident jury can be confidently
+          wrong, which is the point of betting against it. Names and measured status:
+          <span id="jury-note"></span>
+        </p>
+        <p class="small">
+          You pay with your own Pollen through the device flow; the key stays in this tab and is sent
+          only to gen.pollinations.ai. There is no backend and no database — your chips live in this
+          page. <a href="?demo=1">See a bundled round without spending anything</a>.
+        </p>
+      </section>
+    </main>
+
+    <footer class="foot">
+      <a href="https://pollinations.ai" target="_blank" rel="noopener">
+        <img
+          src="https://raw.githubusercontent.com/pollinations/pollinations/main/packages/ui/src/brand/badge-made-with.svg"
+          alt="Made with pollinations.ai"
+          height="28"
+        />
+      </a>
+      <span class="small">JURY — a game for the Pollinations app catalog.</span>
+    </footer>
+
+    <div class="modal" id="modal" hidden>
+      <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <h2 id="modal-title">Connect Pollen</h2>
+        <div id="modal-body"></div>
+        <p><button id="modal-close" class="ghost" type="button">Close</button></p>
+      </div>
+    </div>
+
+    <script type="module" src="app.js"></script>
+  </body>
+</html>

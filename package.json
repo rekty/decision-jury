@@ -1,0 +1,11 @@
+{
+  "name": "decision-jury",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "A game where Pollinations decision models form a jury you bet against.",
+  "scripts": {
+    "test": "node --test",
+    "start": "npx --yes serve -l 8099 ."
+  }
+}
