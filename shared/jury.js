@@ -179,6 +179,19 @@ export function settle({ bet, correct, unanimous }) {
   return { delta: stake * (unanimous ? 1 : 0), payout };
 }
 
+/**
+ * What a round pays. A round with no usable verdict refunds the stake instead of
+ * charging it: the player risks chips against a jury answer, so a jury that never
+ * answered cannot cost anything.
+ */
+export function settleRound({ bet, pick, result }) {
+  const stake = Math.max(0, Math.round(Number(bet) || 0));
+  if (!result || !result.winner) return { delta: 0, payout: stake, correct: false, refunded: true };
+  const correct = pick === result.winner;
+  const outcome = settle({ bet: stake, correct, unanimous: Boolean(result.unanimous) });
+  return { ...outcome, correct, refunded: false };
+}
+
 /** One model's verdict, with a single stricter retry when the reply is unusable. */
 export async function askMember({ model, dilemma, send, maxAttempts = MAX_ATTEMPTS }) {
   const keys = optionKeys(dilemma);

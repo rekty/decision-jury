@@ -16,6 +16,7 @@ import {
   parseDecision,
   runJury,
   settle,
+  settleRound,
 } from "../shared/jury.js";
 
 const trolley = dilemmaById("trolley");
@@ -125,6 +126,45 @@ test("settling chips is even money and doubles on a unanimous jury", () => {
   assert.deepEqual(settle({ bet: 25, correct: true, unanimous: true }), { delta: 25, payout: 50 });
   assert.deepEqual(settle({ bet: -10, correct: true, unanimous: false }), { delta: 0, payout: 0 });
   assert.deepEqual(settle({ bet: 12.6, correct: true, unanimous: false }), { delta: 0, payout: 13 });
+});
+
+test("a jury that never answered refunds the stake", () => {
+  const noVerdict = { distribution: null, winner: null, votes: 0, size: 0 };
+  assert.deepEqual(settleRound({ bet: 25, pick: "pull", result: noVerdict }), {
+    delta: 0,
+    payout: 25,
+    correct: false,
+    refunded: true,
+  });
+  assert.deepEqual(settleRound({ bet: 50, pick: "pull", result: null }), {
+    delta: 0,
+    payout: 50,
+    correct: false,
+    refunded: true,
+  });
+});
+
+test("a real verdict settles through settleRound", () => {
+  const pull = { winner: "pull", unanimous: false };
+  const unanimous = { winner: "pull", unanimous: true };
+  assert.deepEqual(settleRound({ bet: 10, pick: "pull", result: pull }), {
+    delta: 0,
+    payout: 10,
+    correct: true,
+    refunded: false,
+  });
+  assert.deepEqual(settleRound({ bet: 10, pick: "pull", result: unanimous }), {
+    delta: 10,
+    payout: 20,
+    correct: true,
+    refunded: false,
+  });
+  assert.deepEqual(settleRound({ bet: 10, pick: "stay", result: pull }), {
+    delta: -10,
+    payout: 0,
+    correct: false,
+    refunded: false,
+  });
 });
 
 const fakeJury = (replies) => {

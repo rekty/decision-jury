@@ -34,7 +34,9 @@ Live: <https://rekty.github.io/decision-jury/> · Built for Pollinations quest
    distributions into the jury's own distribution. The highest average is the verdict.
 5. Chips settle even money, doubled when every member of the jury picked the same option. A model
    that refuses or answers unusably is retried once with a stricter instruction, then counted as
-   absent — the round still resolves with the members that answered.
+   absent — the round still resolves with the members that answered. If **no** member answers, the
+   round has no verdict and the stake is refunded rather than lost (`settleRound` in
+   `shared/jury.js`), so a dead API never charges the player.
 
 ## Which models are on the jury
 
@@ -56,7 +58,7 @@ spending anything.
 
 ```bash
 npx serve -l 8099 .        # or any static server
-node --test                # 18 tests: parsing, normalising, jury math, payout, retry
+node --test                # 20 tests: parsing, normalising, jury math, payout, refund, retry
 ```
 
 The tests use an injected sender, so they need no key and no network.

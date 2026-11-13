@@ -5,7 +5,7 @@ import {
   modelLabel,
   optionKeys,
   runJury,
-  settle,
+  settleRound,
 } from "./shared/jury.js";
 import { connected, decide, pollDevice, signOut, startDevice, useKey } from "./shared/pollen.js";
 
@@ -155,7 +155,7 @@ function bar(name, value, winner) {
 
 function showResult(result, round) {
   const win = result.winner && state.pick === result.winner;
-  const outcome = settle({ bet: state.bet, correct: Boolean(win), unanimous: Boolean(result.unanimous) });
+  const outcome = settleRound({ bet: state.bet, pick: state.pick, result });
   state.chips = Math.max(0, state.chips + outcome.delta);
   if (result.winner) {
     state.streak = win ? state.streak + 1 : 0;
@@ -196,7 +196,7 @@ function showResult(result, round) {
       }. Chips ${outcome.delta === 0 ? "+0" : outcome.delta > 0 ? `+${outcome.delta}` : outcome.delta}, stake ${
         state.bet
       }. Streak ${state.streak} (best ${state.best}).`
-    : "No usable answer came back, so the round pays nothing.";
+    : "No usable answer came back, so your stake is refunded and the round pays nothing.";
 
   const bars = $("bars");
   bars.replaceChildren(
